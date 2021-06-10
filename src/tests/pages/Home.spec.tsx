@@ -19,7 +19,7 @@ describe('Home page', () => {
     expect(screen.getByText("for R$10,00 month")).toBeInTheDocument()
   });
 
-  it('loads initial data', () => {
+  it('loads initial data', async () => {
     const retrieveStripeMocked = mocked(stripe.prices.retrieve)
 
     retrieveStripeMocked.mockResolvedValueOnce({
@@ -27,8 +27,17 @@ describe('Home page', () => {
       unit_amount: 1000,
     } as any)
 
-    const response = getStaticProps({})
+    const response = await getStaticProps({})
 
-    console.log(response)
+    expect(response).toEqual(
+      expect.objectContaining({
+        props: {
+          product: {
+            priceId: 'fake-price-id',
+            amount: '$10.00'
+          }
+        }
+      })
+    )
   });
 })
